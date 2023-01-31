@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TransactionTextField extends StatefulWidget {
   Function addTransaction;
@@ -17,23 +18,31 @@ class TransactionTextField extends StatefulWidget {
 }
 
 class _TransactionTextFieldState extends State<TransactionTextField> {
+  DateTime? _selectedDate;
+
   void _showDatePickerModal(BuildContext context) {
     showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2022),
       lastDate: DateTime(2024),
-    );
+    ).then((selectedDate) {
+      if (selectedDate != null) {
+        setState(() {
+          _selectedDate = selectedDate;
+        });
+      }
+    });
   }
 
   void submit(BuildContext buildContext) {
     String title = widget.transactionTitleController.text;
     double amount = double.parse(widget.transactionAmountController.text);
-    if (title.isEmpty || amount <= 0) {
+    if (title.isEmpty || amount <= 0 || _selectedDate == null) {
       return;
     }
 
-    widget.addTransaction(title, amount);
+    widget.addTransaction(title, amount, _selectedDate);
     Navigator.of(buildContext).pop();
   }
 
@@ -71,7 +80,9 @@ class _TransactionTextFieldState extends State<TransactionTextField> {
               children: [
                 Expanded(
                   child: Text(
-                    'No Date selected',
+                    _selectedDate == null
+                        ? 'No Date selected'
+                        : 'Picked Date : ${DateFormat.yMd().format(_selectedDate!)}',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),

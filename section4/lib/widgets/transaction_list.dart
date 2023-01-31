@@ -2,21 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/models.dart';
-import '../widgets/widgets.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
+  final Function deletedTransaction;
 
   const TransactionList({
     super.key,
     required this.transactions,
+    required this.deletedTransaction,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       // height: double.infinity,
-      height: 700,
+      height: 600,
       child: Center(
         child: transactions.isEmpty
             ? Column(
@@ -24,9 +25,15 @@ class TransactionList extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Text(
                       'No transactions yet!',
                       style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(
+                      height: 20,
                     ),
                     SizedBox(
                       height: 100,
@@ -68,6 +75,14 @@ class TransactionList extends StatelessWidget {
                         DateFormat('yyyy-MM-dd hh:mm:ss')
                             .format(transaction.dateTime),
                         style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(
+                          Icons.delete,
+                        ),
+                        onPressed: () {
+                          deletedTransaction(transaction.id);
+                        },
                       ),
                     ),
                   );

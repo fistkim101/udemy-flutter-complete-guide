@@ -31,7 +31,7 @@ class _ChartBarState extends State<ChartBar> {
         ),
         FittedBox(
           child: Text(
-            '\$$amount',
+            '\$${amount.toStringAsFixed(0)}',
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),

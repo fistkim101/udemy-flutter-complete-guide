@@ -15,6 +15,7 @@ class Application extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.red,
+        errorColor: Colors.grey,
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.red)
             .copyWith(secondary: Colors.amber),
         textTheme: const TextTheme(
@@ -50,53 +51,38 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final List<Transaction> _transactions = [
-    Transaction(
-      id: 1,
-      title: 'mac studio',
-      amount: 101.5,
-      dateTime: DateTime.now().subtract(
-        const Duration(days: 1),
-      ),
-    ),
-    Transaction(
-      id: 2,
-      title: 'iphone',
-      amount: 90.23,
-      dateTime: DateTime.now().subtract(
-        const Duration(days: 2),
-      ),
-    ),
-    Transaction(
-      id: 3,
-      title: 'iphone X',
-      amount: 70.15,
-      dateTime: DateTime.now().subtract(
-        const Duration(days: 3),
-      ),
-    ),
-  ];
+  final List<Transaction> _transactions = [];
   final transactionTitle = TextEditingController();
   final transactionAmount = TextEditingController();
 
-  _addTransaction(String title, double amount) {
+  _addTransaction(String title, double amount, DateTime selectedDate) {
     final newTransaction = Transaction(
+      id: DateTime.now().toString(),
       title: title,
       amount: amount,
-      dateTime: DateTime.now(),
+      dateTime: selectedDate,
     );
     setState(() {
       _transactions.add(newTransaction);
     });
   }
 
+  _deleteTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((transaction) => transaction.id == id);
+    });
+  }
+
   void _showAddTransactionBottomSheet(BuildContext buildContext) => {
         showModalBottomSheet(
           context: buildContext,
-          builder: (_) => TransactionTextField(
-            addTransaction: _addTransaction,
-            transactionTitleController: transactionTitle,
-            transactionAmountController: transactionAmount,
+          builder: (_) => SizedBox(
+            height: 300,
+            child: TransactionTextField(
+              addTransaction: _addTransaction,
+              transactionTitleController: transactionTitle,
+              transactionAmountController: transactionAmount,
+            ),
           ),
         )
       };
@@ -108,6 +94,11 @@ class _HomeState extends State<Home> {
     }
 
     return total;
+  }
+
+  List<Transaction> get _sortedTransactions {
+    _transactions.sort((a, b) => -a.dateTime.compareTo(b.dateTime));
+    return _transactions;
   }
 
   @override
@@ -132,7 +123,10 @@ class _HomeState extends State<Home> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Chart(weekTotal: weekTotal, transactions: _transactions),
-            TransactionList(transactions: _transactions),
+            TransactionList(
+              transactions: _sortedTransactions,
+              deletedTransaction: _deleteTransaction,
+            ),
           ],
         ),
       ),

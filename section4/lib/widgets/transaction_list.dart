@@ -15,88 +15,100 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      // height: double.infinity,
-      height: 600,
-      child: Center(
-        child: transactions.isEmpty
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                    const SizedBox(
-                      height: 20,
+    final mediaQuery = MediaQuery.of(context);
+
+    return Center(
+      child: transactions.isEmpty
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'No transactions yet!',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    height: 100,
+                    child: Image.asset(
+                      'assets/images/waiting.png',
+                      fit: BoxFit.fitHeight,
                     ),
-                    Text(
-                      'No transactions yet!',
+                  ),
+                ])
+          : ListView.builder(
+              itemBuilder: (context, index) {
+                Transaction transaction = transactions[index];
+
+                return Card(
+                  elevation: 5,
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 5,
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          '\$${transaction.amount}',
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                      ),
+                    ),
+                    title: Text(
+                      transaction.title,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
-                    const SizedBox(
-                      height: 20,
+                    subtitle: Text(
+                      DateFormat('yyyy-MM-dd hh:mm:ss')
+                          .format(transaction.dateTime),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
-                    SizedBox(
-                      height: 100,
-                      child: Image.asset(
-                        'assets/images/waiting.png',
-                        fit: BoxFit.fitHeight,
-                      ),
-                    ),
-                  ])
-            : ListView.builder(
-                itemBuilder: (context, index) {
-                  Transaction transaction = transactions[index];
-
-                  return Card(
-                    elevation: 5,
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 5,
-                    ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        child: FittedBox(
-                          fit: BoxFit.contain,
-                          child: Text(
-                            '\$${transaction.amount}',
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                    trailing: mediaQuery.size.width > 700
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete,
+                                ),
+                                onPressed: () {
+                                  deletedTransaction(transaction.id);
+                                },
+                              ),
+                              Text(
+                                'delete',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          )
+                        : IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                            ),
+                            onPressed: () {
+                              deletedTransaction(transaction.id);
+                            },
                           ),
-                        ),
-                      ),
-                      title: Text(
-                        transaction.title,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      subtitle: Text(
-                        DateFormat('yyyy-MM-dd hh:mm:ss')
-                            .format(transaction.dateTime),
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(
-                          Icons.delete,
-                        ),
-                        onPressed: () {
-                          deletedTransaction(transaction.id);
-                        },
-                      ),
-                    ),
-                  );
-                  // return TransactionCard(transaction: transactions[index]);
-                },
-                itemCount: transactions.length,
-              ),
-      ),
-      // child: Column(
-      //     mainAxisAlignment: MainAxisAlignment.start,
-      //     crossAxisAlignment: CrossAxisAlignment.start,
-      //     children: transactions
-      //         .map((transaction) => TransactionCard(transaction: transaction))
-      //         .toList()),
+                  ),
+                );
+                // return TransactionCard(transaction: transactions[index]);
+              },
+              itemCount: transactions.length,
+            ),
     );
   }
 }

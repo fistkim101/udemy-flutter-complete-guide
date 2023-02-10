@@ -1,9 +1,16 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'models/models.dart';
 import 'widgets/widgets.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]);
   runApp(const Application());
 }
 
@@ -54,6 +61,7 @@ class _HomeState extends State<Home> {
   final List<Transaction> _transactions = [];
   final transactionTitle = TextEditingController();
   final transactionAmount = TextEditingController();
+  bool _showChart = true;
 
   _addTransaction(String title, double amount, DateTime selectedDate) {
     final newTransaction = Transaction(
@@ -75,14 +83,12 @@ class _HomeState extends State<Home> {
 
   void _showAddTransactionBottomSheet(BuildContext buildContext) => {
         showModalBottomSheet(
+          isScrollControlled: true,
           context: buildContext,
-          builder: (_) => SizedBox(
-            height: 300,
-            child: TransactionTextField(
-              addTransaction: _addTransaction,
-              transactionTitleController: transactionTitle,
-              transactionAmountController: transactionAmount,
-            ),
+          builder: (_) => TransactionTextField(
+            addTransaction: _addTransaction,
+            transactionTitleController: transactionTitle,
+            transactionAmountController: transactionAmount,
           ),
         )
       };
@@ -101,41 +107,95 @@ class _HomeState extends State<Home> {
     return _transactions;
   }
 
+  Widget _buildChartVisibleSwitch() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Text(
+          'Show Chart',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        Switch.adaptive(
+            activeColor: Theme.of(context).colorScheme.secondary,
+            value: _showChart,
+            onChanged: (value) {
+              setState(() {
+                _showChart = value;
+              });
+            })
+      ],
+    );
+  }
+
+  double get transactionListHeight {
+    if (_showChart) {
+      return 0.8;
+    }
+    return 1.0;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    bool isLandScape = mediaQuery.orientation == Orientation.landscape;
+
+    final appBar = AppBar(
+      title: const Text('Section4'),
+      titleTextStyle: Theme.of(context).appBarTheme.toolbarTextStyle,
+      actions: [
+        IconButton(
+          onPressed: () => {_showAddTransactionBottomSheet(context)},
+          icon: const Icon(
+            Icons.add,
+          ),
+        )
+      ],
+    );
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Section4'),
-        titleTextStyle: Theme.of(context).appBarTheme.toolbarTextStyle,
-        actions: [
-          IconButton(
-            onPressed: () => {_showAddTransactionBottomSheet(context)},
-            icon: const Icon(
-              Icons.add,
-            ),
-          )
-        ],
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            Chart(weekTotal: weekTotal, transactions: _transactions),
-            TransactionList(
-              transactions: _sortedTransactions,
-              deletedTransaction: _deleteTransaction,
+            if (isLandScape) _buildChartVisibleSwitch(),
+            if (_showChart)
+              SizedBox(
+                height: (mediaQuery.size.height -
+                        mediaQuery.padding.top -
+                        appBar.preferredSize.height) *
+                    0.2,
+                child: Chart(weekTotal: weekTotal, transactions: _transactions),
+              ),
+            SizedBox(
+              height: (mediaQuery.size.height -
+                      mediaQuery.padding.top -
+                      appBar.preferredSize.height) *
+                  transactionListHeight,
+              child: TransactionList(
+                transactions: _sortedTransactions,
+                deletedTransaction: _deleteTransaction,
+              ),
             ),
           ],
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(
-          Icons.add,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(
+          bottom: 10,
         ),
-        onPressed: () => {_showAddTransactionBottomSheet(context)},
+        child: FloatingActionButton(
+          child: const Icon(
+            Icons.add,
+          ),
+          onPressed: () => {_showAddTransactionBottomSheet(context)},
+        ),
       ),
     );
   }

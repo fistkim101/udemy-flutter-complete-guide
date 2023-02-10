@@ -21,53 +21,63 @@ class _ChartBarState extends State<ChartBar> {
     double amount = widget.transaction['amount'] as double;
     double percent = amount == 0.0 ? 0.0 : (amount / widget.weekTotal);
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        const SizedBox(
-          height: 10,
-        ),
-        FittedBox(
-          child: Text(
-            '\$${amount.toStringAsFixed(0)}',
-            style: Theme.of(context).textTheme.bodySmall,
+    return LayoutBuilder(builder: (context, constraints) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          SizedBox(
+            height: constraints.maxHeight * 0.05,
           ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        SizedBox(
-          height: 60,
-          width: 10,
-          child: Stack(
-            alignment: AlignmentDirectional.bottomStart,
-            children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey, width: 1.0),
-                  color: const Color.fromRGBO(220, 220, 220, 1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
+          SizedBox(
+            height: constraints.maxHeight * 0.125,
+            child: FittedBox(
+              child: Text(
+                '\$${amount.toStringAsFixed(0)}',
+                style: Theme.of(context).textTheme.bodySmall,
               ),
-              FractionallySizedBox(
-                heightFactor: percent,
-                child: Container(
+            ),
+          ),
+          SizedBox(
+            height: constraints.maxHeight * 0.05,
+          ),
+          SizedBox(
+            height: constraints.maxHeight * 0.6,
+            width: 10,
+            child: Stack(
+              alignment: AlignmentDirectional.bottomStart,
+              children: <Widget>[
+                Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
+                    border: Border.all(color: Colors.grey, width: 1.0),
+                    color: const Color.fromRGBO(220, 220, 220, 1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-              ),
-            ],
+                FractionallySizedBox(
+                  heightFactor: percent,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(
-          height: 4,
-        ),
-        Text(label),
-      ],
-    );
+          SizedBox(
+            height: constraints.maxHeight * 0.05,
+          ),
+          SizedBox(
+            height: constraints.maxHeight * 0.125,
+            child: FittedBox(
+              child: Text(label),
+            ),
+          ),
+        ],
+      );
+    });
   }
 }

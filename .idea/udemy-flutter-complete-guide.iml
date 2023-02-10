@@ -11,6 +11,9 @@
       <excludeFolder url="file://$MODULE_DIR$/section4/build" />
       <excludeFolder url="file://$MODULE_DIR$/section4/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/section4/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/ExpensesApp/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/ExpensesApp/build" />
+      <excludeFolder url="file://$MODULE_DIR$/ExpensesApp/.dart_tool" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 32 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

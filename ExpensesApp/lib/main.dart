@@ -75,12 +75,6 @@ class _HomeState extends State<Home> {
     });
   }
 
-  _deleteTransaction(String id) {
-    setState(() {
-      _transactions.removeWhere((transaction) => transaction.id == id);
-    });
-  }
-
   void _showAddTransactionBottomSheet(BuildContext buildContext) => {
         showModalBottomSheet(
           isScrollControlled: true,
@@ -179,7 +173,6 @@ class _HomeState extends State<Home> {
                   transactionListHeight,
               child: TransactionList(
                 transactions: _sortedTransactions,
-                deletedTransaction: _deleteTransaction,
               ),
             ),
           ],

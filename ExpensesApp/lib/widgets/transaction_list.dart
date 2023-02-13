@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:section4/widgets/new_transaction_card.dart';
 
 import '../models/models.dart';
 
-class TransactionList extends StatelessWidget {
+class TransactionList extends StatefulWidget {
   final List<Transaction> transactions;
-  final Function deletedTransaction;
 
   const TransactionList({
     super.key,
     required this.transactions,
-    required this.deletedTransaction,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
+  State<TransactionList> createState() => _TransactionListState();
+}
 
+class _TransactionListState extends State<TransactionList> {
+  void _deleteTransaction(String id) {
+    setState(() {
+      widget.transactions.removeWhere((transaction) => transaction.id == id);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Center(
-      child: transactions.isEmpty
+      child: widget.transactions.isEmpty
           ? Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -42,72 +49,16 @@ class TransactionList extends StatelessWidget {
                     ),
                   ),
                 ])
-          : ListView.builder(
-              itemBuilder: (context, index) {
-                Transaction transaction = transactions[index];
-
-                return Card(
-                  elevation: 5,
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 10,
-                    horizontal: 5,
-                  ),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(
-                          '\$${transaction.amount}',
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                      ),
-                    ),
-                    title: Text(
-                      transaction.title,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    subtitle: Text(
-                      DateFormat('yyyy-MM-dd hh:mm:ss')
-                          .format(transaction.dateTime),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    trailing: mediaQuery.size.width > 700
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.delete,
-                                ),
-                                onPressed: () {
-                                  deletedTransaction(transaction.id);
-                                },
-                              ),
-                              Text(
-                                'delete',
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                            ],
-                          )
-                        : IconButton(
-                            icon: const Icon(
-                              Icons.delete,
-                            ),
-                            onPressed: () {
-                              deletedTransaction(transaction.id);
-                            },
-                          ),
-                  ),
-                );
-                // return TransactionCard(transaction: transactions[index]);
-              },
-              itemCount: transactions.length,
+          : ListView(
+              children: [
+                ...widget.transactions
+                    .map((transaction) => NewTransactionCard(
+                          key: ValueKey(transaction.id),
+                          transaction: transaction,
+                          deletedTransaction: _deleteTransaction,
+                        ))
+                    .toList()
+              ],
             ),
     );
   }

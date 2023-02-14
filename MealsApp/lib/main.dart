@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'screens/screens.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -8,29 +10,30 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'DeliMeals',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.pink)
+            .copyWith(secondary: Colors.amber),
+        canvasColor: Color.fromRGBO(255, 254, 229, 1),
+        fontFamily: 'RaleWay',
+        textTheme: ThemeData.light().textTheme.copyWith(
+              bodyText1: TextStyle(
+                color: Colors.black87,
+              ),
+              bodyText2: TextStyle(
+                color: Colors.black87,
+              ),
+              headline1: TextStyle(
+                color: Colors.black,
+                fontSize: 24,
+                fontFamily: 'RobotoCondensed',
+                fontWeight: FontWeight.bold,
+              ),
+            ),
       ),
-      home: MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-    @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('DeliMeals'),
-      ),
-      body: Center(
-        child: Text('Navigation Time!'),
-      ),
+      routes: {
+        '/': (_) => TabsScreen(),
+        CategoryMealScreen.routeName: (context) => CategoryMealScreen(),
+        MealDetailScreen.routeName: (context) => MealDetailScreen(),
+      },
     );
   }
 }

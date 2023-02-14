@@ -1,10 +1,38 @@
 import 'package:flutter/material.dart';
 
 import 'screens/screens.dart';
+import 'models/models.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Filters _filters;
+  List<Meal> _favoriteMeals = [];
+
+  @override
+  void initState() {
+    _filters = Filters(
+      isGlutenFree: true,
+      isVegan: true,
+      isVegetarian: true,
+      isLactoseFree: true,
+    );
+    super.initState();
+  }
+
+  void _addFavoriteMeal(Meal meal) => _favoriteMeals.add(meal);
+
+  void _removeFavoriteMeal(Meal targetMeal) =>
+      _favoriteMeals.removeWhere((meal) => meal.id == targetMeal.id);
+
+  bool _isFavoriteMeal(String mealId) =>
+      _favoriteMeals.any((meal) => meal.id == mealId);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -30,9 +58,23 @@ class MyApp extends StatelessWidget {
             ),
       ),
       routes: {
-        '/': (_) => TabsScreen(),
-        CategoryMealScreen.routeName: (context) => CategoryMealScreen(),
-        MealDetailScreen.routeName: (context) => MealDetailScreen(),
+        '/': (_) => TabsScreen(
+              favoriteMeals: _favoriteMeals,
+            ),
+        CategoryMealScreen.routeName: (context) => CategoryMealScreen(
+              filters: _filters,
+            ),
+        MealDetailScreen.routeName: (context) => MealDetailScreen(
+              isFavoriteMeal: _isFavoriteMeal,
+              addFavoriteMeal: _addFavoriteMeal,
+              removeFavoriteMeal: _removeFavoriteMeal,
+            ),
+        FilterScreen.routeName: (context) => FilterScreen(
+              filters: _filters,
+            ),
+        FavoriteScreen.routeName: (context) => FavoriteScreen(
+              favoriteMeals: _favoriteMeals,
+            ),
       },
     );
   }

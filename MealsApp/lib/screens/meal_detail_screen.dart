@@ -2,9 +2,23 @@ import 'package:flutter/material.dart';
 
 import '../models/models.dart';
 
-class MealDetailScreen extends StatelessWidget {
+class MealDetailScreen extends StatefulWidget {
   static const String routeName = '/meal-detail';
+  Function isFavoriteMeal;
+  Function addFavoriteMeal;
+  Function removeFavoriteMeal;
 
+  MealDetailScreen({
+    @required this.isFavoriteMeal,
+    @required this.addFavoriteMeal,
+    @required this.removeFavoriteMeal,
+  });
+
+  @override
+  State<MealDetailScreen> createState() => _MealDetailScreenState();
+}
+
+class _MealDetailScreenState extends State<MealDetailScreen> {
   Widget _buildIngredients(BuildContext context, Meal selectedMeal) {
     return Container(
       decoration: BoxDecoration(
@@ -106,6 +120,20 @@ class MealDetailScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          widget.isFavoriteMeal(meal.id) ? Icons.star : Icons.star_border,
+        ),
+        onPressed: () {
+          setState(() {
+            if (!widget.isFavoriteMeal(meal.id)) {
+              widget.addFavoriteMeal(meal);
+            } else {
+              widget.removeFavoriteMeal(meal);
+            }
+          });
+        },
       ),
     );
   }

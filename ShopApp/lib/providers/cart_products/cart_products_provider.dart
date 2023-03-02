@@ -4,9 +4,9 @@ import 'package:state_notifier/state_notifier.dart';
 
 import 'cart_products_state.dart';
 
-class CartProductsStateProvider extends StateNotifier<CartProductsState>
+class CartProductsProvider extends StateNotifier<CartProductsState>
     with LocatorMixin {
-  CartProductsStateProvider() : super(CartProductsState.initial());
+  CartProductsProvider() : super(CartProductsState.initial());
 
   void addToCart(Product product) {
     state = CartProductsState(products: [...state.products, product]);

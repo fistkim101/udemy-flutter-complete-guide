@@ -41,7 +41,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildSingleProduct(BuildContext context, Product product) {
+  Widget _buildSingleProduct(BuildContext context, ProductModel product) {
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -59,9 +59,32 @@ class _CartScreenState extends State<CartScreen> {
         subtitle: Text('\$ ${product.price}'),
         trailing: GestureDetector(
           onTap: () {
-            setState(() {
-              context.read<CartProductsProvider>().toggleProduct(product);
-            });
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text('Are you sure?'),
+                content: Text('Do you want to remove the item from cart?'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('No'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        context
+                            .read<CartProductsProvider>()
+                            .toggleProduct(product);
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Text('Yes'),
+                  ),
+                ],
+              ),
+            );
           },
           child: Icon(Icons.delete),
         ),

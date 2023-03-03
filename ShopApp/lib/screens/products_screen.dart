@@ -90,7 +90,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     context.read<ProductsProvider>().fetchProducts(mockProducts);
   }
 
-  bool _filterProduct(Product product, Filter filter) {
+  bool _filterProduct(ProductModel product, Filter filter) {
     if (filter == Filter.all) {
       return true;
     }

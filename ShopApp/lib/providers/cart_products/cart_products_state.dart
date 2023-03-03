@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import '../../models/models.dart';
 
 class CartProductsState extends Equatable {
-  final List<Product> products;
+  final List<ProductModel> products;
 
   const CartProductsState({
     required this.products,
@@ -17,7 +17,7 @@ class CartProductsState extends Equatable {
   }
 
   CartProductsState copyWith({
-    List<Product>? products,
+    List<ProductModel>? products,
   }) {
     return CartProductsState(
       products: products ?? this.products,

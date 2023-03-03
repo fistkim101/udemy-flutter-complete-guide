@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/models.dart';
 
 class OrderSingle extends StatelessWidget {
-  final Order order;
+  final OrderModel order;
 
   const OrderSingle({
     required this.order,

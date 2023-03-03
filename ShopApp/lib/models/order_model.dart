@@ -1,10 +1,10 @@
 import 'models.dart';
 
-class Order {
-  final List<Product> products;
+class OrderModel {
+  final List<ProductModel> products;
   final DateTime createdAt;
 
-  const Order({
+  const OrderModel({
     required this.products,
     required this.createdAt,
   });

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import '../../models/models.dart';
 
 class ProductsState extends Equatable {
-  final List<Product> products;
+  final List<ProductModel> products;
 
   const ProductsState({
     required this.products,
@@ -17,7 +17,7 @@ class ProductsState extends Equatable {
   List<Object> get props => [products];
 
   ProductsState copyWith({
-    List<Product>? products,
+    List<ProductModel>? products,
   }) {
     return ProductsState(
       products: products ?? this.products,

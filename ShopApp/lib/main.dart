@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/providers/cart_products/cart_products.dart';
-import 'package:shop_app/providers/filter/filter.dart';
-import 'package:shop_app/providers/products/products.dart';
 
+import 'providers/providers.dart';
 import 'screens/screens.dart';
 
 void main() {
@@ -27,13 +25,21 @@ class ShopApp extends StatelessWidget {
         StateNotifierProvider<CartProductsProvider, CartProductsState>(
           create: (_) => CartProductsProvider(),
         ),
+        StateNotifierProvider<OrderProvider, OrderState>(
+          create: (_) => OrderProvider(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green),
         ),
-        home: ProductsScreen(),
+        // home: ProductsScreen(),
+        routes: {
+          ProductsScreen.routeName: (context) => ProductsScreen(),
+          CartScreen.routeName: (context) => const CartScreen(),
+          OrdersScreen.routeName: (context) => const OrdersScreen(),
+        },
       ),
     );
   }

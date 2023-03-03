@@ -8,19 +8,26 @@ class CartProductsProvider extends StateNotifier<CartProductsState>
     with LocatorMixin {
   CartProductsProvider() : super(CartProductsState.initial());
 
-  void addToCart(Product product) {
-    state = CartProductsState(products: [...state.products, product]);
-  }
+  void toggleProduct(Product targetProduct) {
+    bool isContained = state.products.contains(targetProduct);
+    if (isContained) {
+      List<Product> products = state.products
+          .where((product) => product.id != targetProduct.id)
+          .toList();
+      state = CartProductsState(products: [...products]);
+      return;
+    }
 
-  void removeFromCart(Product removeTargetProduct) {
-    List<Product> targetRemovedProducts = (state.products)
-        .where((product) => product.id != removeTargetProduct.id)
-        .toList();
-    state = CartProductsState(products: targetRemovedProducts);
+    List<Product> products = [...state.products, targetProduct];
+    state = CartProductsState(products: [...products]);
   }
 
   void clear() {
     state = const CartProductsState(products: []);
+  }
+
+  bool isAddedProduct(Product targetProduct) {
+    return state.products.contains(targetProduct);
   }
 
   @override

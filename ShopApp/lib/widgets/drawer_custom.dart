@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app/screens/orders_screen.dart';
+
+import '../screens/screens.dart';
 
 class DrawerCustom extends StatelessWidget {
   final double appBarHeight;
@@ -26,6 +27,7 @@ class DrawerCustom extends StatelessWidget {
             title: Text('shopping list'),
             onTap: () {
               Navigator.pop(context);
+              // Navigator.popAndPushNamed(context, ProductsScreen.routeName);
             },
           ),
           ListTile(
@@ -33,6 +35,14 @@ class DrawerCustom extends StatelessWidget {
             title: Text('order'),
             onTap: () {
               Navigator.popAndPushNamed(context, OrdersScreen.routeName);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.edit),
+            title: Text('edit'),
+            onTap: () {
+              Navigator.popAndPushNamed(
+                  context, ProductEditListScreen.routeName);
             },
           ),
         ],

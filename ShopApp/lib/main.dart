@@ -39,6 +39,10 @@ class ShopApp extends StatelessWidget {
           ProductsScreen.routeName: (context) => ProductsScreen(),
           CartScreen.routeName: (context) => const CartScreen(),
           OrdersScreen.routeName: (context) => const OrdersScreen(),
+          ProductEditListScreen.routeName: (context) =>
+              const ProductEditListScreen(),
+          ProductAddEditScreen.routeName: (context) =>
+              const ProductAddEditScreen(),
         },
       ),
     );

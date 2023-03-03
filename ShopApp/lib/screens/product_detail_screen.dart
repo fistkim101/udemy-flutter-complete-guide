@@ -39,7 +39,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               clipBehavior: Clip.hardEdge,
               elevation: 5,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
+                borderRadius: BorderRadius.circular(15),
+              ),
               child: Image.network(
                 widget.product.imageUrl,
                 fit: BoxFit.fill,

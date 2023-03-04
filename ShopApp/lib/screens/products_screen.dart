@@ -16,6 +16,47 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
+  bool _isInitialLoad = true;
+
+  @override
+  Widget build(BuildContext context) {
+    _fetchProducts(_isInitialLoad, context);
+    final Filter currentFilter = context.watch<FilterState>().filter;
+
+    final AppBar appBar = AppBar(
+      title: Container(
+        alignment: Alignment.bottomLeft,
+        child: const Text(
+          'ShopApp',
+          textAlign: TextAlign.start,
+        ),
+      ),
+      actions: [
+        _buildFilterButton(context),
+        _buildCartActionButton(context),
+      ],
+    );
+
+    return Scaffold(
+      drawer: DrawerCustom(appBar.preferredSize.height),
+      appBar: appBar,
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: GridView.count(
+          crossAxisCount: 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          children: context
+              .watch<ProductsState>()
+              .products
+              .where((product) => _filterProduct(product, currentFilter))
+              .map((product) => ProductItem(product: product))
+              .toList(),
+        ),
+      ),
+    );
+  }
+
   Widget _buildCartActionButton(BuildContext context) {
     final int cartProductsCount =
         context.watch<CartProductsState>().products.length;
@@ -86,8 +127,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
     );
   }
 
-  void _fetchProducts(BuildContext context) {
-    context.read<ProductsProvider>().fetchProducts(mockProducts);
+  void _fetchProducts(bool isInitialLoad, BuildContext context) {
+    if (isInitialLoad) {
+      context.read<ProductsProvider>().fetchProducts(mockProducts);
+      _isInitialLoad = false;
+    }
   }
 
   bool _filterProduct(ProductModel product, Filter filter) {
@@ -96,44 +140,5 @@ class _ProductsScreenState extends State<ProductsScreen> {
     }
 
     return product.isFavorite;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _fetchProducts(context);
-    final Filter currentFilter = context.watch<FilterState>().filter;
-
-    final AppBar appBar = AppBar(
-      title: Container(
-        alignment: Alignment.bottomLeft,
-        child: const Text(
-          'ShopApp',
-          textAlign: TextAlign.start,
-        ),
-      ),
-      actions: [
-        _buildFilterButton(context),
-        _buildCartActionButton(context),
-      ],
-    );
-
-    return Scaffold(
-      drawer: DrawerCustom(appBar.preferredSize.height),
-      appBar: appBar,
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: GridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          children: context
-              .watch<ProductsState>()
-              .products
-              .where((product) => _filterProduct(product, currentFilter))
-              .map((product) => ProductItem(product: product))
-              .toList(),
-        ),
-      ),
-    );
   }
 }

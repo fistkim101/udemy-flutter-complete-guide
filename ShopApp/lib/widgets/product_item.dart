@@ -21,8 +21,10 @@ class _ProductItemState extends State<ProductItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => ProductDetailScreen(product: widget.product,)));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ProductDetailScreen(
+                  product: widget.product,
+                )));
       },
       child: GridTile(
         child: Container(
@@ -36,6 +38,7 @@ class _ProductItemState extends State<ProductItem> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
             children: [
               IconButton(
                 onPressed: () {
@@ -56,7 +59,9 @@ class _ProductItemState extends State<ProductItem> {
                 width: 3,
               ),
               Text(
-                widget.product.name,
+                _getProductName(widget.product.name),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
                 style: TextStyle(color: Colors.white),
               ),
               SizedBox(
@@ -106,5 +111,13 @@ class _ProductItemState extends State<ProductItem> {
         ),
       ),
     );
+  }
+
+  String _getProductName(String name) {
+    if (name.length < 6) {
+      return name;
+    }
+
+    return '${widget.product.name.substring(0, 6)} ...';
   }
 }

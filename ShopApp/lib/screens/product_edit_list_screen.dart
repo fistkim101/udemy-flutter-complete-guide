@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/screens/product_add_edit_screen.dart';
 
 import '../models/models.dart';
 import '../providers/providers.dart';
@@ -24,6 +25,21 @@ class _ProductEditListScreenState extends State<ProductEditListScreen> {
           alignment: Alignment.bottomLeft,
           child: const Text('Edit product'),
         ),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const ProductAddEditScreen(),
+                ),
+              );
+              setState(() {});
+            },
+            icon: const Icon(
+              Icons.add,
+            ),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -38,6 +54,7 @@ class _ProductEditListScreenState extends State<ProductEditListScreen> {
               itemBuilder: (BuildContext context, int index) {
                 final ProductModel product = productsState.products[index];
                 return Card(
+                  key: ValueKey(product.id),
                   elevation: 5,
                   child: ListTile(
                     leading: Container(
@@ -56,11 +73,25 @@ class _ProductEditListScreenState extends State<ProductEditListScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ProductAddEditScreen(product: product),
+                              ),
+                            );
+                            setState(() {});
+                          },
                           icon: const Icon(Icons.edit),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            setState(() {
+                              context
+                                  .read<ProductsProvider>()
+                                  .deleteProduct(product);
+                            });
+                          },
                           icon: const Icon(Icons.delete),
                         ),
                       ],

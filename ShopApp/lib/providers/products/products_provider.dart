@@ -18,7 +18,7 @@ class ProductsProvider extends StateNotifier<ProductsState> with LocatorMixin {
   }
 
   void toggleFavorite(ProductModel targetProduct) async {
-    state = state.copyWith(processStatusType: ProcessStatusType.processing);
+    // state = state.copyWith(processStatusType: ProcessStatusType.processing);
 
     targetProduct.isFavorite = !targetProduct.isFavorite;
     await read<ProductService>().updateProduct(targetProduct);

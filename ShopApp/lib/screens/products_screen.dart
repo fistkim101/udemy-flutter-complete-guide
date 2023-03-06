@@ -49,19 +49,27 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : Padding(
-              padding: const EdgeInsets.all(10),
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                children: productsState.products
-                    .where((product) => _filterProduct(product, currentFilter))
-                    .map((product) => ProductItem(product: product))
-                    .toList(),
+          : RefreshIndicator(
+              onRefresh: () => _refresh(context),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  children: productsState.products
+                      .where(
+                          (product) => _filterProduct(product, currentFilter))
+                      .map((product) => ProductItem(product: product))
+                      .toList(),
+                ),
               ),
             ),
     );
+  }
+
+  Future<void> _refresh(BuildContext context) async {
+    context.read<ProductsProvider>().fetchProducts();
   }
 
   Widget _buildCartActionButton(BuildContext context) {

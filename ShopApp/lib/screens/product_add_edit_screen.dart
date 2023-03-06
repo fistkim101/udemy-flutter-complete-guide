@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/screens/product_edit_list_screen.dart';
+import 'package:shop_app/providers/product/product.dart';
+import 'package:shop_app/providers/products/products.dart';
 
 import '../models/models.dart';
-import '../providers/providers.dart';
 
 class ProductAddEditScreen extends StatefulWidget {
   static String routeName = '/product-add-edit';
 
-  final ProductModel? product;
-
-  const ProductAddEditScreen({
-    this.product,
-  });
+  const ProductAddEditScreen({super.key});
 
   @override
   State<ProductAddEditScreen> createState() => _ProductAddEditScreenState();
@@ -22,17 +18,18 @@ class _ProductAddEditScreenState extends State<ProductAddEditScreen> {
   final _formState = GlobalKey<FormState>();
   late String _productName;
   late String _productDescription;
-  late String _productImageUrl;
   late int _productPrice;
 
   @override
   Widget build(BuildContext context) {
+    final ProductModel? product = context.watch<ProductState>().product;
+
     return Scaffold(
       appBar: AppBar(
         title: Align(
           alignment: Alignment.bottomLeft,
-          child: widget.product != null
-              ? Text('Edit ${widget.product!.name}')
+          child: product != null
+              ? Text('Edit ${product!.name}')
               : const Text('Add new product'),
         ),
       ),
@@ -51,8 +48,7 @@ class _ProductAddEditScreenState extends State<ProductAddEditScreen> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   TextFormField(
-                    initialValue:
-                        widget.product != null ? widget.product!.name : '',
+                    initialValue: product != null ? product.name : '',
                     keyboardType: TextInputType.text,
                     autocorrect: false,
                     decoration: const InputDecoration(
@@ -69,9 +65,7 @@ class _ProductAddEditScreenState extends State<ProductAddEditScreen> {
                     },
                   ),
                   TextFormField(
-                    initialValue: widget.product != null
-                        ? widget.product!.description
-                        : '',
+                    initialValue: product != null ? product.description : '',
                     keyboardType: TextInputType.multiline,
                     maxLines: 3,
                     autocorrect: false,
@@ -89,9 +83,8 @@ class _ProductAddEditScreenState extends State<ProductAddEditScreen> {
                     },
                   ),
                   TextFormField(
-                    initialValue: widget.product != null
-                        ? widget.product!.price.toString()
-                        : '0',
+                    initialValue:
+                        product != null ? product.price.toString() : '0',
                     keyboardType: TextInputType.number,
                     autocorrect: false,
                     decoration: const InputDecoration(
@@ -113,22 +106,15 @@ class _ProductAddEditScreenState extends State<ProductAddEditScreen> {
             ElevatedButton(
               onPressed: () {
                 _formState.currentState!.save();
-                final ProductModel product = ProductModel(
-                  id: _getProductId(context),
-                  name: _productName,
-                  description: _productDescription,
-                  imageUrl: _getProductImageUrl(),
-                  price: _productPrice,
-                );
+                final ProductModel targetProduct = _getTargetProduct(product);
 
-                if (widget.product == null) {
-                  context.read<ProductsProvider>().addProduct(product);
+                if (product == null) {
+                  context.read<ProductProvider>().addProduct(targetProduct);
                 } else {
-                  context.read<ProductsProvider>().editProduct(product);
+                  context.read<ProductProvider>().editProduct(targetProduct);
                 }
-
+                context.read<ProductsProvider>().fetchProducts();
                 Navigator.pop(context);
-                // Navigator.pushReplacementNamed(context, ProductEditListScreen.routeName);
               },
               child: Text('submit'),
             )
@@ -138,44 +124,25 @@ class _ProductAddEditScreenState extends State<ProductAddEditScreen> {
     );
   }
 
-  String _getProductId(BuildContext context) {
-    if (widget.product == null) {
-      int newProductId = context.read<ProductsProvider>().getNextProductId();
-      return newProductId.toString();
-    }
-
-    return widget.product!.id.toString();
-  }
-
-  String _getProductName() {
-    if (widget.product == null) {
-      return _productName;
-    }
-
-    return widget.product!.name;
-  }
-
-  String _getProductDescription() {
-    if (widget.product == null) {
-      return _productDescription;
-    }
-
-    return widget.product!.description;
-  }
-
-  String _getProductImageUrl() {
-    if (widget.product == null) {
+  String _getProductImageUrl(ProductModel? product) {
+    if (product == null) {
       return 'https://picsum.photos/200';
     }
 
-    return widget.product!.imageUrl;
+    return product!.imageUrl;
   }
 
-  int _getProductPrice() {
-    if (widget.product == null) {
-      return _productPrice;
-    }
+  _getTargetProduct(ProductModel? product) {
+    final String? productId = product?.id;
+    final bool isFavorite = product == null ? false : product.isFavorite;
 
-    return widget.product!.price;
+    return ProductModel(
+      id: productId,
+      name: _productName,
+      description: _productDescription,
+      imageUrl: _getProductImageUrl(product),
+      price: _productPrice,
+      isFavorite: isFavorite,
+    );
   }
 }

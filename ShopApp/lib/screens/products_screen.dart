@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../data/mock_data.dart';
 import '../enums/enums.dart';
 import '../models/models.dart';
 import '../providers/providers.dart';
@@ -16,11 +15,17 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  bool _isInitialLoad = true;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProductsProvider>().fetchProducts();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    _fetchProducts(_isInitialLoad, context);
+    final ProductsState productsState = context.watch<ProductsState>();
     final Filter currentFilter = context.watch<FilterState>().filter;
 
     final AppBar appBar = AppBar(
@@ -40,20 +45,22 @@ class _ProductsScreenState extends State<ProductsScreen> {
     return Scaffold(
       drawer: DrawerCustom(appBar.preferredSize.height),
       appBar: appBar,
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: GridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          children: context
-              .watch<ProductsState>()
-              .products
-              .where((product) => _filterProduct(product, currentFilter))
-              .map((product) => ProductItem(product: product))
-              .toList(),
-        ),
-      ),
+      body: productsState.processStatusType == ProcessStatusType.processing
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(10),
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                children: productsState.products
+                    .where((product) => _filterProduct(product, currentFilter))
+                    .map((product) => ProductItem(product: product))
+                    .toList(),
+              ),
+            ),
     );
   }
 
@@ -125,13 +132,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
         ),
       ),
     );
-  }
-
-  void _fetchProducts(bool isInitialLoad, BuildContext context) {
-    if (isInitialLoad) {
-      context.read<ProductsProvider>().fetchProducts(mockProducts);
-      _isInitialLoad = false;
-    }
   }
 
   bool _filterProduct(ProductModel product, Filter filter) {

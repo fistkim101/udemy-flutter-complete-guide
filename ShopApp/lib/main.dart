@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import 'providers/providers.dart';
 import 'screens/screens.dart';
+import 'service/service.dart';
 
 void main() {
   runApp(const ShopApp());
@@ -16,8 +18,16 @@ class ShopApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider(
+          create: (_) => ProductService(
+            httpClient: http.Client(),
+          ),
+        ),
         StateNotifierProvider<FilterProvider, FilterState>(
           create: (_) => FilterProvider(),
+        ),
+        StateNotifierProvider<ProductProvider, ProductState>(
+          create: (_) => ProductProvider(),
         ),
         StateNotifierProvider<ProductsProvider, ProductsState>(
           create: (_) => ProductsProvider(),

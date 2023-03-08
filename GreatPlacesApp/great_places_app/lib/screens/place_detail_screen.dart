@@ -20,8 +20,9 @@ class PlaceDetailScreen extends StatelessWidget {
           child: Text(place.name),
         ),
       ),
-      body: Padding(
+      body: Container(
         padding: const EdgeInsets.all(20),
+        alignment: Alignment.center,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -29,6 +30,7 @@ class PlaceDetailScreen extends StatelessWidget {
           children: [
             Image.file(
               place.imageFile,
+              height: 300,
               fit: BoxFit.cover,
             ),
             const SizedBox(
@@ -38,7 +40,7 @@ class PlaceDetailScreen extends StatelessWidget {
             const SizedBox(
               height: 15,
             ),
-            Text('location : ${place.toString()}'),
+            Text('location : ${place.location.toString()}'),
           ],
         ),
       ),

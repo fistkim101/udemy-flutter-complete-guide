@@ -18,7 +18,7 @@ class _PlaceItemState extends State<PlaceItem> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(3),
       child: Card(
         elevation: 5,
         clipBehavior: Clip.hardEdge,
@@ -27,7 +27,8 @@ class _PlaceItemState extends State<PlaceItem> {
         ),
         child: ListTile(
           leading: CircleAvatar(
-            child: Image.file(widget.place.imageFile),
+            backgroundImage: FileImage(widget.place.imageFile),
+            // backgroundImage: Image.file(widget.place.imageFile),
           ),
           title: Text(widget.place.name),
           subtitle: widget.place.location.address != null

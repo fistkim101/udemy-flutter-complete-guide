@@ -1,22 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_state_notifier/flutter_state_notifier.dart';
+import 'package:provider/provider.dart';
+
+import 'providers/providers.dart';
+import 'screens/screens.dart';
 
 void main() {
-  runApp(GreatPlacesApp());
+  runApp(const GreatPlacesApp());
 }
 
 class GreatPlacesApp extends StatelessWidget {
+  const GreatPlacesApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Align(
-            alignment: Alignment.bottomLeft,
-            child: Text('Great Places App'),
-          ),
+    return MultiProvider(
+      providers: [
+        StateNotifierProvider<PlaceListProvider, PlaceListState>(
+          create: (_) => PlaceListProvider(),
         ),
-        body: Container(),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue),
+        ),
+        routes: {
+          PlaceListScreen.routeName: (context) => PlaceListScreen(),
+        },
       ),
     );
   }

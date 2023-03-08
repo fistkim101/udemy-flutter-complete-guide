@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
 import '../models/models.dart';
@@ -15,9 +16,10 @@ class PlaceAddScreen extends StatefulWidget {
 }
 
 class _PlaceAddScreenState extends State<PlaceAddScreen> {
+  ImagePicker imagePicker = ImagePicker();
   TextEditingController _nameEditingController = TextEditingController();
   TextEditingController _addressEditingController = TextEditingController();
-  ImagePicker imagePicker = ImagePicker();
+  LocationData? _currentUserLocation = null;
   File? _imageFile = null;
 
   @override
@@ -87,7 +89,24 @@ class _PlaceAddScreenState extends State<PlaceAddScreen> {
                   _takePicture();
                 },
                 child: const Text('Take a picture'),
-              )
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              _currentUserLocation == null
+                  ? const Text('Please get a location ...')
+                  : Text(
+                      '${_currentUserLocation!.latitude.toString()}, ${_currentUserLocation!.longitude.toString()}'),
+              const SizedBox(
+                height: 15,
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                onPressed: () async {
+                  _getCurrentUserLocation();
+                },
+                child: const Text('Get a location'),
+              ),
             ],
           ),
         ),
@@ -112,16 +131,25 @@ class _PlaceAddScreenState extends State<PlaceAddScreen> {
   void _savePlace(BuildContext context) {
     final String name = _nameEditingController.value.text;
     final String address = _addressEditingController.value.text;
-    final LocationModel location =
-        LocationModel(logtitude: 10, latitude: 10, address: address);
     final PlaceModel newPlace = PlaceModel(
       id: DateTime.now().toString(),
       name: name,
-      location: location,
+      location: LocationModel(
+        latitude: _currentUserLocation!.latitude.toString(),
+        logtitude: _currentUserLocation!.longitude.toString(),
+        address: address,
+      ),
       imageFile: _imageFile!,
     );
 
     context.read<PlaceListProvider>().addPlace(newPlace);
     Navigator.pop(context);
+  }
+
+  Future<void> _getCurrentUserLocation() async {
+    final LocationData currentUserLocation = await Location().getLocation();
+    setState(() {
+      _currentUserLocation = currentUserLocation;
+    });
   }
 }

@@ -1,11 +1,11 @@
 class LocationModel {
-  final double logtitude;
-  final double latitude;
+  final String latitude;
+  final String logtitude;
   String? address;
 
   LocationModel({
-    required this.logtitude,
     required this.latitude,
+    required this.logtitude,
     this.address,
   });
 

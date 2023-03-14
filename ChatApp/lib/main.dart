@@ -5,8 +5,8 @@ import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
-import 'screen/screen.dart';
 import 'provider/provider.dart';
+import 'screen/screen.dart';
 import 'service/service.dart';
 
 void main() async {
@@ -48,6 +48,10 @@ class ChatApp extends StatelessWidget {
         ),
         routes: {
           SplashScreen.routeName: (context) => const SplashScreen(),
+          SignInScreen.routeName: (context) => const SignInScreen(),
+          SignUpScreen.routeName: (context) => const SignUpScreen(),
+          ChatRoomsScreen.routeName: (context) => const ChatRoomsScreen(),
+          ChatDetailScreen.routeName: (context) => const ChatDetailScreen(),
         },
       ),
     );

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../widget/widget.dart';
 
-class SplashScreen extends StatelessWidget {
-  static String routeName = "/";
+class SignInScreen extends StatefulWidget {
+  @override
+  _SignInScreenState createState() => _SignInScreenState();
+}
 
-  const SplashScreen({super.key});
-
+class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

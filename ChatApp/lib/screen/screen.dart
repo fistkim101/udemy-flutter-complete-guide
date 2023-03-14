@@ -1,5 +1,5 @@
 export 'splash_screen.dart';
-export 'sign_in.dart';
-export 'sign_up.dart';
+export 'sign_in_screen.dart';
+export 'sign_up_screen.dart';
 export 'chat_list_screen.dart';
-export 'chat_detail.dart';
+export 'chat_detail_screen.dart';

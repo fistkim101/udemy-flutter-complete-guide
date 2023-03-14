@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "456461941547",
+    "project_id": "chat-app-sample-fistkim101",
+    "storage_bucket": "chat-app-sample-fistkim101.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:456461941547:android:5013de09bc3de5d23d636e",
+        "android_client_info": {
+          "package_name": "com.example.chat_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "456461941547-i9gebr47c7mfbou3n6beoa1tvjou9jh6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxuCg_mlQzzXYWiQgJ6IqtTXBKH5LR5eo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "456461941547-i9gebr47c7mfbou3n6beoa1tvjou9jh6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

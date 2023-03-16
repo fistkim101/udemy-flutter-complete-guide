@@ -16,7 +16,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Container(
-        alignment: Alignment.center,
+        alignment: Alignment.bottomLeft,
         child: Text(title),
       ),
       actions: actions,

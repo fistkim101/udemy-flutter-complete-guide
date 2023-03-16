@@ -26,11 +26,13 @@ class ChatApp extends StatelessWidget {
       providers: [
         StreamProvider<firebaseAuth.User?>(
           create: (context) => firebaseAuth.FirebaseAuth.instance.userChanges(),
+          // create: (context) => context.read<AuthRepository>().user,
           initialData: null,
         ),
         StateNotifierProvider<AuthProvider, AuthState>(
           create: (context) => AuthProvider(
             firebaseAuthService: FirebaseAuthService(),
+            firebaseAuthentication: firebaseAuth.FirebaseAuth.instance,
           ),
         ),
       ],
@@ -39,6 +41,7 @@ class ChatApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.orange,
           appBarTheme: const AppBarTheme(
+            actionsIconTheme: IconThemeData(color: Colors.white),
             titleTextStyle: TextStyle(
               color: Colors.white,
               fontSize: 16,

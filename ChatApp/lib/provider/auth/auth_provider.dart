@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:chat_app/constant/constant.dart';
 import 'package:chat_app/error/custom_error.dart';
+import 'package:chat_app/model/model.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebaseAuth;
 import 'package:state_notifier/state_notifier.dart';
 
@@ -21,7 +23,7 @@ class AuthProvider extends StateNotifier<AuthState> with LocatorMixin {
     required String username,
     required String email,
     required String password,
-    required File imageFile,
+    required File? imageFile,
   }) async {
     try {
       await firebaseAuthService.signUp(
@@ -58,19 +60,24 @@ class AuthProvider extends StateNotifier<AuthState> with LocatorMixin {
   }
 
   @override
-  void update(Locator watch) {
+  void update(Locator watch) async {
     final firebaseAuth.User? user = watch<firebaseAuth.User?>();
     if (user == null) {
       state = state.copyWith(authStatusType: AuthStatusType.unAuthenticated);
       return;
     } else {
+      UserModel? currentUser;
+      await usersCollection.doc(user.uid).get().then((result) {
+        currentUser = UserModel.fromDocument(result);
+      });
+
       state = state.copyWith(
         authStatusType: AuthStatusType.authenticated,
         user: user,
+        currentUser: currentUser,
       );
     }
 
-    print('AuthState : ${state.toString()}');
     super.update(watch);
   }
 }

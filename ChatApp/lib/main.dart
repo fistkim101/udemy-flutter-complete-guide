@@ -1,3 +1,5 @@
+import 'package:chat_app/provider/users/users_provider.dart';
+import 'package:chat_app/provider/users/users_state.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebaseAuth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +37,12 @@ class ChatApp extends StatelessWidget {
             firebaseAuthentication: firebaseAuth.FirebaseAuth.instance,
           ),
         ),
+        StateNotifierProvider<UsersProvider, UsersState>(
+          create: (context) => UsersProvider(),
+        ),
+        StateNotifierProvider<ChatProvider, ChatState>(
+          create: (context) => ChatProvider(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -48,6 +56,9 @@ class ChatApp extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+          iconTheme: Theme.of(context).iconTheme.copyWith(
+                color: Colors.white,
+              ),
         ),
         routes: {
           SplashScreen.routeName: (context) => const SplashScreen(),
@@ -55,6 +66,7 @@ class ChatApp extends StatelessWidget {
           SignUpScreen.routeName: (context) => const SignUpScreen(),
           ChatRoomsScreen.routeName: (context) => const ChatRoomsScreen(),
           ChatDetailScreen.routeName: (context) => const ChatDetailScreen(),
+          FindUserScreen.routeName: (context) => const FindUserScreen(),
         },
       ),
     );

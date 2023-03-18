@@ -23,7 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late String _username;
   late String _email;
   late String _password;
-  late File _imageFile;
+  File? _imageFile;
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
 
   @override

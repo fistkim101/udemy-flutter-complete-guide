@@ -10,7 +10,7 @@ class FirebaseAuthService {
     required String username,
     required String email,
     required String password,
-    required File imageFile,
+    required File? imageFile,
   }) async {
     final firebaseAuth.UserCredential userCredential =
         await firebaseAuthentication.createUserWithEmailAndPassword(
@@ -24,18 +24,22 @@ class FirebaseAuthService {
         .child('userImages')
         .child('${signedInUser.uid}.jpg');
 
-    TaskSnapshot imageUploadTaskSnapShot = await ref.putFile(imageFile);
-    String imageUrl = await imageUploadTaskSnapShot.ref.getDownloadURL();
+    Map<String, String> userProfile = {
+      'uid': signedInUser.uid,
+      'username': username,
+      'email': email,
+    };
+
+    if (imageFile != null) {
+      TaskSnapshot imageUploadTaskSnapShot = await ref.putFile(imageFile);
+      String imageUrl = await imageUploadTaskSnapShot.ref.getDownloadURL();
+      userProfile['imageUrl'] = imageUrl;
+    }
 
     await FirebaseFirestore.instance
         .collection('users')
         .doc(signedInUser.uid)
-        .set({
-      'uid': signedInUser.uid,
-      'username': username,
-      'email': email,
-      'imageUrl': imageUrl,
-    });
+        .set(userProfile);
   }
 
   Future<void> signIn({

@@ -112,7 +112,6 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  // TODO : 버튼 자체가 Loding.. 되던가 사용자가 제출되고 있음을 알 수 있도록 완성도 높히기
   void _submit(BuildContext context) async {
     setState(() {
       _autovalidateMode = AutovalidateMode.always;

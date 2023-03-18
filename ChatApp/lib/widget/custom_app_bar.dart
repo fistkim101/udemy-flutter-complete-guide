@@ -5,6 +5,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   final List<Widget>? actions;
   final double? preferredHeight;
   final Widget? customLeading;
+  final bool? noGenerateLeading;
 
   const CustomAppBar({
     super.key,
@@ -12,6 +13,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     this.actions,
     this.preferredHeight,
     this.customLeading,
+    this.noGenerateLeading,
   });
 
   @override
@@ -23,6 +25,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
       ),
       actions: actions,
       iconTheme: Theme.of(context).iconTheme,
+      automaticallyImplyLeading: false,
       leading: customLeading ??
           IconButton(
             onPressed: () => Navigator.of(context).pop(),

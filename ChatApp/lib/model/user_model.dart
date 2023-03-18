@@ -4,36 +4,40 @@ class UserModel {
   final String uid;
   final String username;
   final String email;
-  final String? imageUrl;
-  final Map<String, String> chatRooms;
+  String? imageUrl;
+  Map<String, String>? chatRooms;
 
-  const UserModel({
+  UserModel({
     required this.uid,
     required this.username,
     required this.email,
     this.imageUrl,
-    required this.chatRooms,
+    this.chatRooms,
   });
 
   factory UserModel.fromDocument(DocumentSnapshot userDocumentSnapshot) {
     Map<String, dynamic> user =
         userDocumentSnapshot.data() as Map<String, dynamic>;
-    if (user.containsKey('imageUrl')) {
-      return UserModel(
-        uid: userDocumentSnapshot.id,
-        username: user['username'],
-        email: user['email'],
-        imageUrl: user['imageUrl'],
-        chatRooms: {},
-      );
-    }
 
-    return UserModel(
+    UserModel convetedUser = UserModel(
       uid: userDocumentSnapshot.id,
       username: user['username'],
       email: user['email'],
-      chatRooms: {},
     );
+
+    if (user.containsKey('imageUrl')) {
+      convetedUser.imageUrl = user['imageUrl'];
+    }
+
+    if (user.containsKey('chatRooms')) {
+      Map<String, String> chatRooms = {};
+      (user['chatRooms'] as Map<String, dynamic>).forEach((key, value) {
+        chatRooms[key] = value.toString();
+      });
+      convetedUser.chatRooms = chatRooms;
+    }
+
+    return convetedUser;
   }
 
   @override

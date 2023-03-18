@@ -19,9 +19,10 @@ class ChatProvider extends StateNotifier<ChatState> {
     final UserModel currentUser = await _getUserModel(currentUserUid);
     final UserModel counterPartUser = await _getUserModel(counterPartUid);
 
-    final String? chatRoomUid = currentUser.chatRooms[counterPartUid];
+    final String? chatRoomUid = currentUser.chatRooms?[counterPartUid];
 
-    state = state.copyWith(
+    ChatState newState = ChatState.initial();
+    state = newState.copyWith(
       progressType: ProgressType.completed,
       chatRoomUid: chatRoomUid,
       counterPartUser: counterPartUser,
@@ -51,6 +52,24 @@ class ChatProvider extends StateNotifier<ChatState> {
         ]),
       });
 
+      Map<String, String> currentUserChatRooms =
+          await _getExistingChatRooms(state.currentUser!);
+      await usersCollection.doc(state.currentUser!.uid).update({
+        'chatRooms': {
+          state.counterPartUser!.uid: newChatRoomDocument.id,
+          ...currentUserChatRooms,
+        }
+      });
+
+      Map<String, String> counterPartUserChatRooms =
+          await _getExistingChatRooms(state.counterPartUser!);
+      await usersCollection.doc(state.counterPartUser!.uid).update({
+        'chatRooms': {
+          state.currentUser!.uid: newChatRoomDocument.id,
+          ...counterPartUserChatRooms,
+        }
+      });
+
       state = state.copyWith(
         progressType: ProgressType.completed,
         chatRoomUid: newChatRoomDocument.id,
@@ -73,5 +92,20 @@ class ChatProvider extends StateNotifier<ChatState> {
   Future<UserModel> _getUserModel(String uid) async {
     final DocumentSnapshot userDocument = await usersCollection.doc(uid).get();
     return UserModel.fromDocument(userDocument);
+  }
+
+  Future<Map<String, String>> _getExistingChatRooms(UserModel user) async {
+    Map<String, String> chatRooms = {};
+    final existingCurrentUserDocument =
+        (await usersCollection.doc(user.uid).get()).data()
+            as Map<String, dynamic>;
+    if (existingCurrentUserDocument.containsKey('chatRooms')) {
+      (existingCurrentUserDocument['chatRooms'] as Map<String, dynamic>)
+          .forEach((key, value) {
+        chatRooms[key] = value.toString();
+      });
+    }
+
+    return chatRooms;
   }
 }

@@ -111,9 +111,14 @@ class _FindUserScreenState extends State<FindUserScreen> {
                       ),
               ),
               title: Text(counterPartUser.username),
-              onTap: () {
+              onTap: () async {
                 FocusScope.of(context).unfocus();
                 _textEditingController.clear();
+
+                AuthState authState = context.read<AuthState>();
+                await context
+                    .read<ChatProvider>()
+                    .readyToChat(counterPartUser.uid, authState.user!.uid);
 
                 Navigator.pushNamed(
                   context,

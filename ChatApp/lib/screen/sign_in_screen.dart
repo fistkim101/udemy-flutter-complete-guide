@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import '../error/error.dart';
 import '../provider/provider.dart';
 import '../screen/screen.dart';
-import '../widget/widget.dart';
 import '../util/util.dart';
+import '../widget/widget.dart';
 
 class SignInScreen extends StatefulWidget {
   static String routeName = '/signIn';
@@ -27,6 +27,7 @@ class _SignInScreenState extends State<SignInScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Login',
+        customLeading: Container(),
       ),
       body: Form(
         key: _formKey,

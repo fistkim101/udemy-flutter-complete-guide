@@ -59,6 +59,15 @@ class AuthProvider extends StateNotifier<AuthState> with LocatorMixin {
     firebaseAuthService.signOut(firebaseAuthentication: firebaseAuthentication);
   }
 
+  Future<void> syncUser() async {
+    UserModel? currentUser;
+    await usersCollection.doc(state.currentUser!.uid).get().then((result) {
+      currentUser = UserModel.fromDocument(result);
+    });
+
+    state = state.copyWith(currentUser: currentUser);
+  }
+
   @override
   void update(Locator watch) async {
     final firebaseAuth.User? user = watch<firebaseAuth.User?>();

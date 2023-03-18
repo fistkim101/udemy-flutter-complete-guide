@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../enum/enum.dart';
+import '../model/model.dart';
 import '../provider/provider.dart';
 import '../screen/screen.dart';
 import '../widget/widget.dart';
@@ -20,6 +22,7 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Chat Rooms',
+        customLeading: Container(),
         actions: [
           IconButton(
             onPressed: () async {
@@ -40,6 +43,73 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
           ),
         ],
       ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          const SizedBox(
+            height: 10,
+          ),
+          _buildChatRooms(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChatRooms(BuildContext context) {
+    final ChatRoomState chatRoomState = context.watch<ChatRoomState>();
+    if (chatRoomState.progressType == ProgressType.processing) {
+      return const Expanded(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (chatRoomState.counterPartUsers.isEmpty) {
+      return Container();
+    }
+
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: chatRoomState.counterPartUsers.length,
+      itemBuilder: (context, index) {
+        UserModel counterPartUser = chatRoomState.counterPartUsers[index];
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+          child: ListTile(
+            key: ValueKey(counterPartUser.uid),
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: counterPartUser.imageUrl != null
+                  ? Image.network(
+                      counterPartUser.imageUrl!,
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    )
+                  : const CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.grey,
+                    ),
+            ),
+            title: Text(counterPartUser.username),
+            onTap: () async {
+              AuthState authState = context.read<AuthState>();
+              await context
+                  .read<ChatProvider>()
+                  .readyToChat(counterPartUser.uid, authState.user!.uid);
+
+              Navigator.pushNamed(
+                context,
+                ChatDetailScreen.routeName,
+                arguments: counterPartUser,
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

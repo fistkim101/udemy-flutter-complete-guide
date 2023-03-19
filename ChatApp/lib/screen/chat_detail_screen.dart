@@ -60,8 +60,14 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                             .doc(chatState.chatRoomUid)
                             .snapshots(),
                         builder: (context, chatSnapshot) {
-                          if (chatSnapshot.connectionState ==
-                              ConnectionState.waiting) {
+                          // if (chatSnapshot.connectionState ==
+                          //     ConnectionState.waiting) {
+                          //   return const Center(
+                          //     child: CircularProgressIndicator(),
+                          //   );
+                          // }
+
+                          if(!chatSnapshot.hasData) {
                             return const Center(
                               child: CircularProgressIndicator(),
                             );
@@ -77,10 +83,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                             );
                           }).toList();
                           chats.sort(
-                              (a, b) => a.createdAt.compareTo(b.createdAt));
+                              (a, b) => b.createdAt.compareTo(a.createdAt));
 
                           return Expanded(
                             child: ListView.builder(
+                              reverse: true,
                               itemCount: chats.length,
                               itemBuilder: (context, index) {
                                 bool isCurrentUserMessage =
